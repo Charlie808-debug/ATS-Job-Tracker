@@ -1,5 +1,12 @@
 # ATS Job Tracker
 
+![GitHub last commit](https://img.shields.io/github/last-commit/Charlie808-debug/ATS-Job-Tracker)
+![GitHub repo size](https://img.shields.io/github/repo-size/Charlie808-debug/ATS-Job-Tracker)
+![GitHub top language](https://img.shields.io/github/languages/top/Charlie808-debug/ATS-Job-Tracker)
+![GitHub License](https://img.shields.io/github/license/Charlie808-debug/ATS-Job-Tracker)
+![n8n](https://img.shields.io/badge/Built%20With-n8n-FF6D5A?logo=n8n&logoColor=white)
+![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?logo=googlesheets&logoColor=white)
+
 An automated Applicant Tracking System (ATS) job tracker built using **n8n** to streamline internship and job searching. The workflow detects the ATS used by a company's careers page, extracts current job openings, matches them against user-defined preferred roles, and updates a Google Sheet automatically.
 
 ---
@@ -129,4 +136,3 @@ Implemented:
 
 Electronics and Communication Engineering
 
-Interested in Communication Systems, Automation, and Cybersecurity.
