@@ -1,0 +1,58 @@
+{
+  "name": "ATS Job Tracker - Workday",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f3881be0-9d43-409f-a480-288f57c33c30",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        16
+      ],
+      "id": "5e908c4e-1f1b-41af-b9ad-850ea35f400d",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fef0480e-3a07-464a-9b16-c261cb4ec7b5",
+  "meta": {
+    "instanceId": "668468446d06bbf7d0b00a33236fda1750a0e904fdd27a38b6e612953d79bfa9"
+  },
+  "nodeGroups": [],
+  "id": "ePImelSVt3z2mI3I",
+  "tags": []
+}

@@ -1,0 +1,521 @@
+{
+  "name": "ATS Job Tracker - Phase 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "71123749-03c8-4436-ac69-6c20b24ef3c5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E",
+          "mode": "list",
+          "cachedResultName": "Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Target Companies",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company",
+              "lookupValue": "Qualcomm"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d22ae541-aeef-426a-b906-1cccac6038ec",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0KmXBChjR2Dkt9yg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"ATS Platform\"]}}",
+                    "rightValue": "Workday",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "94fa17e4-cb42-4ae9-ab2b-2a36d7f541c0"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        0
+      ],
+      "id": "9cda66d0-1feb-4969-a77e-da6f26c1406b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Careers URL\"].replace(/\\/$/, \"\") + \"/api/pcsx/search\" }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "domain",
+              "value": "={{ $json[\"Careers URL\"]\n      .replace(\"https://\",\"\")\n      .replace(\"http://\",\"\")\n      .replace(\"careers.\",\"\")\n      .replace(\"www.\",\"\")\n      .split(\"/\")[0] }}"
+            },
+            {
+              "name": "query",
+              "value": "="
+            },
+            {
+              "name": "loaction"
+            },
+            {
+              "name": "start ",
+              "value": "0"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "sort_by",
+              "value": "timestamp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        544,
+        176
+      ],
+      "id": "8bbbbafb-64e3-4ac5-82c3-49291f78092f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const sheet = $(\"Switch\").first().json;\n\nconst preferred = (sheet[\"Preferred Roles\"] || \"\")\n  .toLowerCase()\n  .split(\",\")\n  .map(r => r.trim());\n\nconst title = ($json.name || \"\").toLowerCase();\n\nconst matched = preferred.some(role => {\n  const words = role.split(/\\s+/);\n  return words.every(word => title.includes(word));\n});\n\nreturn {\n  ...$json,\n  matched\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        176
+      ],
+      "id": "d3410162-4997-4f31-8fdc-01548480f5ac",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E",
+          "mode": "list",
+          "cachedResultName": "Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Target Companies",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aQMM-qSJpKVeEY-nLxhHA3eesrUTuMVReEVSjGjtH1E/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Open Roles": "={{$json.Open_Roles}}",
+            "Last Checked": "={{new Date().toISOString().split(\"T\")[0]}}",
+            "Notes": "={{$json.Open_Roles === \"Yes\"\n? \"Jobs available\"\n: \"Apply page found but no jobs\"}}",
+            "row_number": "={{$json.row_number}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Domain",
+              "displayName": "Domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ATS Platform",
+              "displayName": "ATS Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Careers URL",
+              "displayName": "Careers URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Preferred Roles",
+              "displayName": "Preferred Roles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Checked",
+              "displayName": "Last Checked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Open Roles",
+              "displayName": "Open Roles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1776,
+        16
+      ],
+      "id": "782f1b75-9e23-4f63-a81c-5019b4b5ae45",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0KmXBChjR2Dkt9yg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.positions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        720,
+        176
+      ],
+      "id": "7e3382e7-6f2a-4018-8e7e-7fa5c3534cfb",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5920f724-d37f-4b1f-9a9e-8f6085c950c3",
+              "leftValue": "={{$json.matched}}",
+              "rightValue": "={{true}}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1104,
+        176
+      ],
+      "id": "bec328b2-9c0c-494e-ae87-d06ee8e2d3ac",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const jobs = $input.all();\n\nconst titles = jobs.map(j => j.json.name);\n\nreturn [{\n  json: {\n    Open_Roles: titles.length > 0 ? \"Yes\" : \"No\",\n    Matching_Jobs: titles.join(\"\\n\")\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        160
+      ],
+      "id": "73e261df-fdb2-4f08-a2f0-e0a6345378af",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1584,
+        16
+      ],
+      "id": "06d81900-21e0-4266-aa0c-c10bd5f51d53",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fcd987ae-3fd4-4119-93d7-54b024aebb99",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "668468446d06bbf7d0b00a33236fda1750a0e904fdd27a38b6e612953d79bfa9"
+  },
+  "nodeGroups": [],
+  "id": "TNTg6h7a1hYK8kBx",
+  "tags": []
+}
